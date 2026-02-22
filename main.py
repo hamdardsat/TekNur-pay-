@@ -8,19 +8,26 @@ from telegram.ext import (
     filters,
 )
 
-# گرفتن توکن از Railway Variables
+# گرفتن توکن از Railway
 BOT_TOKEN = os.getenv("BOT_TOKEN")
+
+# اگر توکن نبود، خطا بده
+if not BOT_TOKEN:
+    raise ValueError("BOT_TOKEN تنظیم نشده است ❌")
 
 # منیو اصلی
 main_menu = ReplyKeyboardMarkup(
-    [["📦 لیست کدها"], ["👤 پشتیبانی"]],
+    [
+        ["📦 لیست کدها"],
+        ["👤 پشتیبانی"]
+    ],
     resize_keyboard=True
 )
 
-# دیتابیس ساده داخل حافظه (فعلاً)
+# دیتابیس ساده داخل حافظه
 codes = []
 
-# دستور استارت
+# دستور /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "به ربات خوش آمدید ✅",
@@ -37,7 +44,7 @@ async def show_codes(update: Update, context: ContextTypes.DEFAULT_TYPE):
             text += f"{c}\n"
         await update.message.reply_text(text)
 
-# پیام‌های عادی
+# مدیریت پیام‌ها
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
 
@@ -49,9 +56,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # اجرای ربات
 def main():
-    if not BOT_TOKEN:
-        raise ValueError("BOT_TOKEN تنظیم نشده ❌")
-
     app = ApplicationBuilder().token(BOT_TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
